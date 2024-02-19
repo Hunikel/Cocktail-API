@@ -1,12 +1,18 @@
 package com.santo.cocktail.router;
 
 import com.santo.cocktail.handler.CocktailHandler;
-import com.santo.cocktail.services.CocktailService;
+import com.santo.cocktail.models.Cocktail;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -18,12 +24,54 @@ public class CocktailRouter {
     private static final String BASE_URL = "/cocktail/";
 
     @RouterOperations({
-            @RouterOperation(path = BASE_URL, beanClass = CocktailService.class, beanMethod = "getAllCocktails"),
-            @RouterOperation(path = BASE_URL + "names", beanClass = CocktailService.class, beanMethod = "getAllCocktailNames"),
-            @RouterOperation(path = BASE_URL + "{name}", beanClass = CocktailService.class, beanMethod = "getCocktail"),
-            @RouterOperation(path = BASE_URL, beanClass = CocktailService.class, beanMethod = "saveCocktail"),
-            @RouterOperation(path = BASE_URL, beanClass = CocktailService.class, beanMethod = "updateCocktail"),
-            @RouterOperation(path = BASE_URL + "{name}", beanClass = CocktailService.class, beanMethod = "deleteCocktail")})
+            @RouterOperation(path = BASE_URL, produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET, params = "page,size,sort"
+                    , operation = @Operation(operationId = "getAllCocktails", description = "Get all cocktails with pagination and sorting",
+                    parameters = {
+                            @Parameter(name = "page", description = "Page number", required = true),
+                            @Parameter(name = "size", description = "Page size", required = true),
+                            @Parameter(name = "sort", description = "Sort by")
+                    },
+                    responses = {
+                            @ApiResponse(responseCode = "200", description = "successful operation")})
+            ),
+            @RouterOperation(path = BASE_URL + "names", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET
+                    , operation = @Operation(operationId = "getAllCocktailNames", description = "Get all cocktail names",
+
+                    responses = {
+                            @ApiResponse(responseCode = "200", description = "successful operation")})
+            ),
+            @RouterOperation(path = BASE_URL + "{name}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET, params = "name"
+                    , operation = @Operation(operationId = "getCocktail", description = "Get a cocktail by name"
+                    , parameters = {
+                    @Parameter(name = "name", description = "Cocktail name", required = true)
+            }
+                    , responses = {
+                    @ApiResponse(responseCode = "200", description = "successful operation")})
+            ),
+            @RouterOperation(path = BASE_URL, produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.PUT, params = "cocktail"
+                    , operation = @Operation(operationId = "saveCocktail", description = "Save a cocktail",
+                    parameters = {
+                            @Parameter(name = "cocktail", description = "Cocktail object", required = true, content = @Content(schema = @Schema(implementation = Cocktail.class)))
+                    },
+                    responses = {
+                            @ApiResponse(responseCode = "200", description = "successful operation")})
+            ),
+            @RouterOperation(path = BASE_URL, produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.PATCH, params = "cocktail"
+                    , operation = @Operation(operationId = "updateCocktail", description = "Update a cocktail",
+                    parameters = {
+                            @Parameter(name = "cocktail", description = "Cocktail object", required = true, content = @Content(schema = @Schema(implementation = Cocktail.class)))
+                    },
+                    responses = {
+                            @ApiResponse(responseCode = "200", description = "successful operation")})
+            ),
+            @RouterOperation(path = BASE_URL + "{name}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.DELETE, params = "name"
+                    , operation = @Operation(operationId = "deleteCocktail", description = "Delete a cocktail by name",
+                    parameters = {
+                            @Parameter(name = "name", description = "Cocktail name", required = true)
+                    },
+                    responses = {
+                            @ApiResponse(responseCode = "200", description = "successful operation")})
+            )})
     @Bean
     public RouterFunction<ServerResponse> cocktailRoute(CocktailHandler handler) {
         return RouterFunctions
