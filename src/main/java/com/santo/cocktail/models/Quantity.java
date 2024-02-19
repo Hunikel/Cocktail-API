@@ -12,11 +12,13 @@ public class Quantity {
     private int value;
     private String unit;
 
+    private static final String INCOMPATIBLE_UNITS = "Incompatible units";
+
     public Quantity add(Quantity q) {
         if (unit.equals(q.unit)) {
             return new Quantity(value + q.value, unit);
         } else {
-            throw new IllegalArgumentException("Incompatible units");
+            throw new IllegalArgumentException(INCOMPATIBLE_UNITS);
         }
     }
 
@@ -24,7 +26,7 @@ public class Quantity {
         if (unit.equals(q.unit)) {
             return new Quantity(value - q.value, unit);
         } else {
-            throw new IllegalArgumentException("Incompatible units");
+            throw new IllegalArgumentException(INCOMPATIBLE_UNITS);
         }
     }
 
@@ -42,7 +44,7 @@ public class Quantity {
         } else if (unit.equals("ml") && newUnit.equals("cl")) {
             return new Quantity(value / 10, newUnit);
         } else {
-            throw new IllegalArgumentException("Incompatible units");
+            throw new IllegalArgumentException(INCOMPATIBLE_UNITS);
         }
     }
 
@@ -50,7 +52,7 @@ public class Quantity {
         if (unit.equals(q.unit)) {
             return value > q.value;
         } else {
-            throw new IllegalArgumentException("Incompatible units");
+            throw new IllegalArgumentException(INCOMPATIBLE_UNITS);
         }
     }
 
@@ -58,7 +60,7 @@ public class Quantity {
         if (unit.equals(q.unit)) {
             return value < q.value;
         } else {
-            throw new IllegalArgumentException("Incompatible units");
+            throw new IllegalArgumentException(INCOMPATIBLE_UNITS);
         }
     }
 
@@ -66,7 +68,7 @@ public class Quantity {
         if (unit.equals(q.unit)) {
             return value == q.value;
         } else {
-            throw new IllegalArgumentException("Incompatible units");
+            throw new IllegalArgumentException(INCOMPATIBLE_UNITS);
         }
     }
 
