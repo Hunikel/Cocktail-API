@@ -6,13 +6,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @AllArgsConstructor
-@Document(collection="quantities")
+@Document(collection = "quantities")
 public class Quantity {
 
+    private static final String INCOMPATIBLE_UNITS = "Incompatible units";
     private int value;
     private String unit;
-
-    private static final String INCOMPATIBLE_UNITS = "Incompatible units";
 
     public Quantity add(Quantity q) {
         if (unit.equals(q.unit)) {

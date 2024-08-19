@@ -7,11 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @EqualsAndHashCode
-@Document(collection="ingredients")
+@Document(collection = "ingredients")
 public class Ingredient {
 
-        @Indexed(unique = true)
-        private String name;
-        private String measure;
+    @Indexed(unique = true)
+    private String name;
 
 }

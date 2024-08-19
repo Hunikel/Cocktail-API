@@ -14,9 +14,8 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain configure(ServerHttpSecurity http) {
         return http.authorizeExchange(exchanges -> exchanges.pathMatchers("/swagger*").permitAll()
-                        .anyExchange().authenticated())
+                        .anyExchange().permitAll())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .cors(ServerHttpSecurity.CorsSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec.authenticationSuccessHandler(new RedirectServerAuthenticationSuccessHandler("/"))).build();
     }

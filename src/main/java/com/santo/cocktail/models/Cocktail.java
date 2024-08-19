@@ -2,11 +2,10 @@ package com.santo.cocktail.models;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.bson.types.Binary;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Map;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode
@@ -18,6 +17,7 @@ public class Cocktail {
     private String category;
     private String shortDescription;
     private String longDescription;
-    private Binary image;
-    private Map<Ingredient, Quantity> measures;
+    private String imageUrl;
+    private List<CocktailMeasurement> measurements;
+
 }
