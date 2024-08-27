@@ -13,8 +13,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -28,6 +26,11 @@ public class CocktailHandler {
         log.info("getAllCocktails called request: {}", request);
         return cocktailService.getAllCocktails(pageable)
                 .flatMap(cocktails -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(cocktails));
+    }
+
+    public Mono<ServerResponse> getCocktails(ServerRequest request) {
+        log.info("getCocktails called request: {}", request);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(cocktailService.getCocktails(), Cocktail.class);
     }
 
     public Mono<ServerResponse> getAllCocktailNames(ServerRequest request) {

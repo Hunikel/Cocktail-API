@@ -25,6 +25,10 @@ public class CocktailService {
                 .map(c -> new PageImpl<>(c.getT1(), pageable, c.getT2()));
     }
 
+    public Flux<Cocktail> getCocktails() {
+        return cocktailRepository.findAll();
+    }
+
     public Mono<Cocktail> getCocktail(String name) {
         return cocktailRepository.findById(name);
     }

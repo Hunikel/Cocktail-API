@@ -89,6 +89,13 @@ public class CocktailRouter {
                             @ApiResponse(responseCode = "404", description = "Cocktail not found"),
                             @ApiResponse(responseCode = "500", description = "Internal Server Error")})
             ),
+            @RouterOperation(path = BASE_URL + "/getCocktails", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET,
+                    operation = @Operation(operationId = "getCocktails", description = "Get a list of cocktails",
+                            responses = {
+                                    @ApiResponse(responseCode = "200", description = "successful operation"),
+                                    @ApiResponse(responseCode = "400", description = "Invalid request")
+                            })
+            ),
             @RouterOperation(path = BASE_URL + "/count", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET, operation = @Operation(operationId = "getCount", description = "Get the total count of all cocktails",
                     responses = {
                             @ApiResponse(responseCode = "200", description = "successful operation"),
@@ -100,11 +107,13 @@ public class CocktailRouter {
     public RouterFunction<ServerResponse> cocktailRoute(CocktailHandler handler) {
         return RouterFunctions
                 .route(GET(BASE_URL + "/getAllCocktails").and(accept(MediaType.APPLICATION_JSON)), handler::getAllCocktails)
+                .andRoute(GET(BASE_URL + "/getCocktails").and(accept(MediaType.APPLICATION_JSON)), handler::getCocktails)
                 .andRoute(GET(BASE_URL + "/names").and(accept(MediaType.APPLICATION_JSON)), handler::getAllCocktailNames)
                 .andRoute(GET(BASE_URL + "/{name}").and(accept(MediaType.APPLICATION_JSON)), handler::getCocktail)
                 .andRoute(POST(BASE_URL + "/").and(accept(MediaType.APPLICATION_JSON)), handler::saveCocktail)
                 .andRoute(PUT(BASE_URL + "/").and(accept(MediaType.APPLICATION_JSON)), handler::updateCocktail)
                 .andRoute(DELETE(BASE_URL + "/{name}").and(accept(MediaType.APPLICATION_JSON)), handler::deleteCocktail);
     }
+
 
 }
