@@ -1,4 +1,4 @@
-package com.santo.cocktail.models;
+package com.santo.cocktail.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CocktailMeasurement {
+public class CocktailMeasurementDTO {
 
     @NotNull(message = "Ingredient is required")
-    private Ingredient ingredient;
+    private IngredientDTO ingredient;
 
     @NotNull(message = "Quantity is required")
-    private Quantity quantity;
+    private QuantityDTO quantity;
 }

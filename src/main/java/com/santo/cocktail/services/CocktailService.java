@@ -1,5 +1,8 @@
 package com.santo.cocktail.services;
 
+import com.santo.cocktail.dto.CocktailDTO;
+import com.santo.cocktail.exception.ResourceNotFoundException;
+import com.santo.cocktail.mapper.CocktailMapper;
 import com.santo.cocktail.models.Cocktail;
 import com.santo.cocktail.repository.CocktailPaginationRepository;
 import com.santo.cocktail.repository.CocktailRepository;
@@ -17,29 +20,41 @@ public class CocktailService {
 
     private final CocktailPaginationRepository cocktailPaginationRepository;
     private final CocktailRepository cocktailRepository;
+    private final CocktailMapper cocktailMapper;
 
-    public Mono<Page<Cocktail>> getAllCocktails(Pageable pageable) {
+    public Mono<Page<CocktailDTO>> getAllCocktails(Pageable pageable) {
         return cocktailPaginationRepository.findAllBy(pageable)
+                .map(cocktailMapper::toCocktailDTO)
                 .collectList()
                 .zipWith(cocktailRepository.count())
                 .map(c -> new PageImpl<>(c.getT1(), pageable, c.getT2()));
     }
 
-    public Flux<Cocktail> getCocktails() {
-        return cocktailRepository.findAll();
+    public Flux<CocktailDTO> getCocktails() {
+        return cocktailRepository.findAll()
+                .map(cocktailMapper::toCocktailDTO);
     }
 
-    public Mono<Cocktail> getCocktail(String name) {
-        return cocktailRepository.findById(name);
+    public Mono<CocktailDTO> getCocktail(String name) {
+        return cocktailRepository.findById(name)
+                .map(cocktailMapper::toCocktailDTO)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Cocktail not found with name: " + name)));
     }
 
-    public Mono<Cocktail> saveCocktail(Cocktail cocktail) {
-        return cocktailRepository.save(cocktail);
+    public Mono<CocktailDTO> saveCocktail(CocktailDTO cocktailDTO) {
+        Cocktail cocktail = cocktailMapper.toCocktail(cocktailDTO);
+        return cocktailRepository.save(cocktail)
+                .map(cocktailMapper::toCocktailDTO);
     }
 
-
-    public Mono<Cocktail> updateCocktail(Cocktail cocktail) {
-        return cocktailRepository.save(cocktail);
+    public Mono<CocktailDTO> updateCocktail(CocktailDTO cocktailDTO) {
+        return cocktailRepository.findById(cocktailDTO.getName())
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Cocktail not found with name: " + cocktailDTO.getName())))
+                .flatMap(existingCocktail -> {
+                    Cocktail updatedCocktail = cocktailMapper.toCocktail(cocktailDTO);
+                    return cocktailRepository.save(updatedCocktail);
+                })
+                .map(cocktailMapper::toCocktailDTO);
     }
 
     public Mono<Void> deleteCocktail(String name) {
@@ -47,7 +62,8 @@ public class CocktailService {
     }
 
     public Flux<String> getAllCocktailNames() {
-        return cocktailRepository.findAll().map(Cocktail::getName);
+        return cocktailRepository.findAll()
+                .map(Cocktail::getName);
     }
 
 }

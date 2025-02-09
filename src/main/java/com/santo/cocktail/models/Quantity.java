@@ -1,17 +1,27 @@
 package com.santo.cocktail.models;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 @Data
 @AllArgsConstructor
-@Document(collection = "quantities")
 public class Quantity {
 
+    public enum Unit {
+        ML, CL
+    }
+
     private static final String INCOMPATIBLE_UNITS = "Incompatible units";
+
+    @Positive(message = "Value must be positive")
     private int value;
-    private String unit;
+
+    @NotNull(message = "Unit is required")
+    @Enumerated(EnumType.STRING)
+    private Unit unit;
 
     public Quantity add(Quantity q) {
         if (unit.equals(q.unit)) {
@@ -34,13 +44,16 @@ public class Quantity {
     }
 
     public Quantity divide(int n) {
+        if (n == 0) {
+            throw new IllegalArgumentException("Cannot divide by zero");
+        }
         return new Quantity(value / n, unit);
     }
 
-    public Quantity convert(String newUnit) {
-        if (unit.equals("cl") && newUnit.equals("ml")) {
+    public Quantity convert(Unit newUnit) {
+        if (unit == Unit.CL && newUnit == Unit.ML) {
             return new Quantity(value * 10, newUnit);
-        } else if (unit.equals("ml") && newUnit.equals("cl")) {
+        } else if (unit == Unit.ML && newUnit == Unit.CL) {
             return new Quantity(value / 10, newUnit);
         } else {
             throw new IllegalArgumentException(INCOMPATIBLE_UNITS);

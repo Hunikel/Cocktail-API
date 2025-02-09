@@ -1,21 +1,18 @@
-package com.santo.cocktail.models;
+package com.santo.cocktail.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "cocktails")
-public class Cocktail {
+public class CocktailDTO {
 
-    @Indexed(unique = true)
     @NotEmpty(message = "Name is required")
     private String name;
 
@@ -30,5 +27,5 @@ public class Cocktail {
     private String imageUrl;
 
     @NotNull(message = "Measurements are required")
-    private List<CocktailMeasurement> measurements;
+    private List<CocktailMeasurementDTO> measurements;
 }

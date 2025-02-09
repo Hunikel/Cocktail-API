@@ -1,5 +1,6 @@
 package com.santo.cocktail.handler;
 
+import com.santo.cocktail.dto.CocktailDTO;
 import com.santo.cocktail.models.Cocktail;
 import com.santo.cocktail.services.CocktailService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class CocktailHandler {
 
     public Mono<ServerResponse> getCocktails(ServerRequest request) {
         log.info("getCocktails called request: {}", request);
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(cocktailService.getCocktails(), Cocktail.class);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(cocktailService.getCocktails(), CocktailDTO.class);
     }
 
     public Mono<ServerResponse> getAllCocktailNames(ServerRequest request) {
@@ -41,12 +42,12 @@ public class CocktailHandler {
     public Mono<ServerResponse> getCocktail(ServerRequest request) {
         log.info("getCocktail request: {}", request);
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(cocktailService.getCocktail(request.pathVariable("name")), Cocktail.class);
+                .body(cocktailService.getCocktail(request.pathVariable("name")), CocktailDTO.class);
     }
 
     public Mono<ServerResponse> saveCocktail(ServerRequest request) {
         log.info("saveCocktail request: {}", request);
-        return request.bodyToMono(Cocktail.class)
+        return request.bodyToMono(CocktailDTO.class)
                 .flatMap(cocktail -> cocktailService.saveCocktail(cocktail)
                         .then(ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).build())
                 );
@@ -54,7 +55,7 @@ public class CocktailHandler {
 
     public Mono<ServerResponse> updateCocktail(ServerRequest request) {
         log.info("updateCocktail request: {}", request);
-        return request.bodyToMono(Cocktail.class)
+        return request.bodyToMono(CocktailDTO.class)
                 .flatMap(cocktail -> cocktailService.updateCocktail(cocktail)
                         .then(ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).build())
                 );
